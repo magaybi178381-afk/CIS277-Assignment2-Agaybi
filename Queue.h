@@ -54,9 +54,34 @@ public:
 
         return true;
     }
-    bool front(T& value) const;
-    bool empty() const;
-    bool full() const;
-    std::size_t size() const;
-    std::size_t capacity() const;
+
+    bool front(T& value) const
+    {
+        if(empty())
+        {
+            return flase;
+        }
+
+        value = data[frontIndex];
+
+        return true;
+    }
+
+    bool empty() const
+    {
+        return count == 0;
+    }
+
+    bool full() const
+    {
+        return count == capacity_;
+    }
+    std::size_t size() const
+    {
+        return count;
+    }
+    std::size_t capacity() const
+    {
+        return capacity_;
+    }
 };
