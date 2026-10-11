@@ -11,23 +11,20 @@ The program uses a fixed-capacity circular array for the Queue.
 
 The queue keeps track of three values:
 
-- `frontIndex` — the position of the oldest item.
-- `count` — the number of items currently in the queue.
-- `capacity_` — the maximum number of items.
+- frontIndex — the position of the oldest item.
+- count — the number of items currently in the queue.
+- capacity_ — the maximum number of items.
 
 When a new item is added, the program calculates its position using:
 
-```text
 (frontIndex + count) % capacity
-```
 
-When an item is removed, `frontIndex` moves forward using:
+When an item is removed, frontIndex moves forward using:
 
-```text
 (frontIndex + 1) % capacity
-```
 
-The `%` operator allows the queue to wrap around to the beginning of the array without moving the other elements.
+
+The % operator allows the queue to wrap around to the beginning of the array without moving the other elements.
 
 The Queue is responsible for maintaining the FIFO order of packet descriptors.
 
@@ -39,15 +36,13 @@ The MemoryPool may reuse blocks in LIFO order, but this does not change the FIFO
 
 ## How to Compile
 
-```text
 g++ -std=c++23 -Wall -Wextra -pedantic main.cpp PacketQueue.cpp MemoryPool.cpp -o packet_queue
-```
+
 
 ## How to Run
 
-```text
 ./packet_queue
-```
+
 
 ## Tests and Results
 
@@ -58,13 +53,13 @@ The program was tested with the following cases:
 | Queue with integers | Items are returned FIFO | Passed |
 | Queue with strings | Items are returned FIFO | Passed |
 | Queue wraparound | New item uses wrapped array position | Passed |
-| `front()` | Shows first item without removing it | Passed |
-| Full queue | `enqueue()` returns false | Passed |
-| Empty queue | `dequeue()` returns false | Passed |
+| front() | Shows first item without removing it | Passed |
+| Full queue | enqueue() returns false | Passed |
+| Empty queue | dequeue() returns false | Passed |
 | Receive three packets | Packets are stored in arrival order | Passed |
 | Process packets | Packets are returned FIFO | Passed |
 | Receive after processing | New packet can reuse released memory | Passed |
-| `0x00` and `0xFF` | Binary values are preserved | Passed |
+| 0x00 and 0xFF | Binary values are preserved | Passed |
 | Length of 1 | Packet is accepted | Passed |
 | Length equal to block size | Packet is accepted | Passed |
 | Packet larger than block size | Packet is rejected | Passed |
@@ -79,33 +74,31 @@ Packets must be processed in the order they arrived. The Queue provides FIFO ord
 
 ### 2. How does your circular array wrap without shifting all waiting packets?
 
-The queue uses the `%` operator to calculate the next position. When an index reaches the end of the array, it wraps back to index zero.
+The queue uses the % operator to calculate the next position. When an index reaches the end of the array, it wraps back to index zero.
 
 For example:
 
-```text
 (frontIndex + count) % capacity
-```
 
 This allows new items to use available positions at the beginning of the array without moving the existing items.
 
 ### 3. What happens at queue overflow and underflow, and why must those attempts leave state unchanged?
 
-When the queue is full, `enqueue()` returns `false` and does not add an item.
+When the queue is full, enqueue() returns false and does not add an item.
 
-When the queue is empty, `dequeue()` and `front()` return `false` and do not change the output argument.
+When the queue is empty, dequeue() and front() return false and do not change the output argument.
 
 The state must remain unchanged so that a failed operation does not corrupt or change the queue.
 
-### 4. What are the time complexities of queue operations and of `receive`/`processNext` when the packet has `length` bytes?
+### 4. What are the time complexities of queue operations and of receive/processNext when the packet has length bytes?
 
 The Queue operations are O(1) because they only update indexes and the element count.
 
-`receive()` and `processNext()` are O(length) because the packet bytes must be copied. The Queue and MemoryPool operations themselves are O(1), but copying the packet requires time proportional to its length.
+receive() and processNext() are O(length) because the packet bytes must be copied. The Queue and MemoryPool operations themselves are O(1), but copying the packet requires time proportional to its length.
 
-### 5. Why must `processNext` copy bytes out before returning the block to the pool?
+### 5. Why must processNext copy bytes out before returning the block to the pool?
 
-The block belongs to the MemoryPool. After it is returned to the pool, it can be reused for another packet. Therefore, `processNext()` must copy the packet bytes into the output vector before releasing the block.
+The block belongs to the MemoryPool. After it is returned to the pool, it can be reused for another packet. Therefore, processNext() must copy the packet bytes into the output vector before releasing the block.
 
 ## AI Use
 
