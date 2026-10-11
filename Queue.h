@@ -6,11 +6,12 @@
 template <typename T>
 class Queue
 {
-Private:
+private:
     T* data;
     std::size_t capacity_;
     std::size_t frontIndex;
-     std::size_t count;
+    std::size_t count;
+
 public:
     explicit Queue(std::size_t capacity)
     {
@@ -28,27 +29,32 @@ public:
 
     bool enqueue(const T& value)
     {
-        if(full())
+        if (full())
         {
-            return flase;
+            return false;
         }
 
-        std::size_t index = (frontIndex + count) % capacity_;
+        std::size_t index =
+            (frontIndex + count) % capacity_;
+
         data[index] = value;
+
         count++;
 
         return true;
     }
+
     bool dequeue(T& value)
     {
-        if(empty())
+        if (empty())
         {
-            return flase;
+            return false;
         }
 
         value = data[frontIndex];
 
-        frontIndex = (frontIndex + 1) % capacity_;
+        frontIndex =
+            (frontIndex + 1) % capacity_;
 
         count--;
 
@@ -57,9 +63,9 @@ public:
 
     bool front(T& value) const
     {
-        if(empty())
+        if (empty())
         {
-            return flase;
+            return false;
         }
 
         value = data[frontIndex];
@@ -76,12 +82,16 @@ public:
     {
         return count == capacity_;
     }
+
     std::size_t size() const
     {
         return count;
     }
+
     std::size_t capacity() const
     {
         return capacity_;
     }
 };
+
+#endif
