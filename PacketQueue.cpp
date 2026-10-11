@@ -65,3 +65,43 @@ bool PacketQueue::receive(
 
     return true;
 }
+
+bool PacketQueue::processNext(
+    std::size_t& id,
+    std::vector<unsigned char>& bytes
+)
+{
+    if(queue.empty())
+    {
+        return false;
+    }
+
+    PackDesceiptor packet;
+
+    queue.dequeue(packet);
+
+    id = packet.id;
+
+    bytes.resize(packet.length);
+
+    std::memcpy(
+        bytes.data(),
+        packet.block,
+        packet.length
+    );
+
+    pool.deallocate(packet.block);
+
+    return true;
+}
+
+std::size_t PacketQueue::pending() const
+{
+    return queue.size();
+}
+
+std::size_t PacketQueue::availableBlocks() const
+{
+    return pool.availableBlocks();    
+}
+
