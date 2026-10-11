@@ -54,10 +54,10 @@ bool PacketQueue::receive(
     PacketDescriptor packet;
 
     packet.id = id;
-    packet.black = block;
+    packet.block = block;
     packet.length = length;
 
-    if(!queue.enqueue(packet))
+    if (!queue.enqueue(packet))
     {
         pool.deallocate(block);
         return false;
@@ -65,4 +65,3 @@ bool PacketQueue::receive(
 
     return true;
 }
-        
