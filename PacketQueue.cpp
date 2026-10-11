@@ -17,35 +17,52 @@ bool PacketQueue::receive(
     std::size_t length
 )
 {
-}
-    if(bytes == nullptr)
+    if (bytes == nullptr)
     {
-      return false;
+        return false;
     }
 
-    if(length == 0)
+    if (length == 0)
     {
-      return false;  
+        return false;
     }
 
-    if(length > pool.blocksize())
+    if (length > pool.blockSize())
     {
-      return false;
+        return false;
     }
 
-    if(queue.full())
+    if (queue.full())
     {
-      return false;
+        return false;
     }
 
-    if(pool.availableBlocks() == 0)
+    if (pool.availableBlocks() == 0)
     {
-      return false;
+        return false;
     }
 
     void* block = pool.allocate();
 
-    if(block == nullptr)
+    if (block == nullptr)
     {
-      return false;
+        return false;
     }
+
+    std::memcpy(block, bytes, length);
+
+    PacketDescriptor packet;
+
+    packet.id = id;
+    packet.black = block;
+    packet.length = length;
+
+    if(!queue.enqueue(packet))
+    {
+        pool.deallocate(block);
+        return false;
+    }
+
+    return true;
+}
+        
