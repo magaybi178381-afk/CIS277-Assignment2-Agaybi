@@ -71,12 +71,12 @@ bool PacketQueue::processNext(
     std::vector<unsigned char>& bytes
 )
 {
-    if(queue.empty())
+    if (queue.empty())
     {
         return false;
     }
 
-    PackDesceiptor packet;
+    PacketDescriptor packet;
 
     queue.dequeue(packet);
 
@@ -102,6 +102,5 @@ std::size_t PacketQueue::pending() const
 
 std::size_t PacketQueue::availableBlocks() const
 {
-    return pool.availableBlocks();    
+    return pool.availableBlocks();
 }
-
