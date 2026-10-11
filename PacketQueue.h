@@ -1,12 +1,28 @@
+#ifndef PACKETQUEUE_H
+#define PACKETQUEUE_H
+
+#include <cstddef>
+#include <vector>
+
 #include "MemoryPool.h"
 #include "Queue.h"
 
+struct packetDescriptor
+{
+    std::size_t id;
+    void* block;
+    std::size_t length;
+};
+
 class PacketQueue
 {
+Private:
+    MemoryPool pool;
+    Queue<PacketDescriptor> queue;
 public:
     PacketQueue(std::size_t blockSize, std::size_t blockCount);
 
-    bool receive(std::size_t id, const unsigned char* bytes, std::size_t length);
+    bool receive(std::size_t id, const unsigned char* bytes, std::size_t length)
     bool processNext(std::size_t& id, std::vector<unsigned char>& bytes);
 
     std::size_t pending() const;
